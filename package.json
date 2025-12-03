@@ -1,0 +1,17 @@
+{
+  "name": "advent-2025",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest",
+    "watch": "nodemon -q -e ts --exec \"npm run test\""
+  },
+  "dependencies": {
+    "@types/node": "^24.10.1",
+    "vitest": "^4.0.15"
+  }
+}
