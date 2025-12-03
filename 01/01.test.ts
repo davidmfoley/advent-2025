@@ -12,32 +12,22 @@ const getRotation = (line: string) => {
   return sign * rotation
 }
 
-const countZeroes = (lines: string[]) => {
-  let val = 50
-  let zeroes = 0
-  for (let line of lines) {
-    const rotation = getRotation(line)
-    val += rotation
+const summarizer =
+  (calculate: (current: number, next: number) => number) =>
+  (lines: string[]) => {
+    let val = 50
+    let crossings = 0
+    for (let line of lines) {
+      const rotation = getRotation(line)
+      const next = val + rotation
 
-    if (val % 100 === 0) {
-      zeroes++
+      crossings += calculate(val, next)
+      val = next
     }
+    return crossings
   }
-  return zeroes
-}
 
-const countZeroCrossings = (lines: string[]) => {
-  let val = 50
-  let crossings = 0
-  for (let line of lines) {
-    const rotation = getRotation(line)
-    const next = val + rotation
-
-    crossings += zeroCrossings(val, next)
-    val = next
-  }
-  return crossings
-}
+const countZeroes = summarizer((_, next) => (next % 100 === 0 ? 1 : 0))
 
 const zeroCrossings = (val: number, next: number) => {
   let hundreds = Math.abs(Math.floor(val / 100) - Math.floor(next / 100))
@@ -47,6 +37,8 @@ const zeroCrossings = (val: number, next: number) => {
   const modifier = (val % 100 === 0 ? -1 : 0) + (next % 100 === 0 ? 1 : 0)
   return modifier + hundreds
 }
+
+const countZeroCrossings = summarizer(zeroCrossings)
 
 test('isZeroCrossing', () => {
   expect(zeroCrossings(10, 0)).toEqual(1)
