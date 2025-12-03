@@ -1,9 +1,9 @@
-import fs from 'fs'
-import path from 'path'
 import { test, expect } from 'vitest'
+import { fileReader } from '../utils/fileReader'
 
-const loadLines = (dir: string, file: string) =>
-  fs.readFileSync(path.join(dir, file), 'utf-8').split('\n')
+const readInputFile = fileReader(__dirname)
+
+const loadLines = (file: string) => readInputFile(file).split('\n')
 
 const getRotation = (line: string) => {
   const direction = line[0]
@@ -73,17 +73,17 @@ test('parse lines', () => {
 })
 
 test('part 1 with example input', () => {
-  const lines = loadLines(__dirname, 'exampleInput.txt')
+  const lines = loadLines('exampleInput.txt')
   expect(countZeroes(lines)).toEqual(3)
 })
 
 test('part 2 with example input', () => {
-  const lines = loadLines(__dirname, 'exampleInput.txt')
+  const lines = loadLines('exampleInput.txt')
   expect(countZeroes(lines)).toEqual(3)
 })
 
 test('answers', () => {
-  const lines = loadLines(__dirname, 'input.txt')
+  const lines = loadLines('input.txt')
   console.log('01 pt1', countZeroes(lines))
   console.log('01 pt2', countZeroCrossings(lines))
 })
