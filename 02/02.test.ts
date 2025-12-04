@@ -4,12 +4,10 @@ import { fileReader } from '../utils/fileReader'
 type Range = [number, number]
 type Predicate = (id: string) => boolean
 
-const readInputFile = fileReader(__dirname)
-
-const readRangeFile = (name: string) =>
-  readInputFile(name)
-    .split(',')
-    .map((r) => r.split('-').map(Number)) as Range[]
+const readRangeFile = fileReader(
+  __dirname,
+  (s) => s.split(',').map((r) => r.split('-').map(Number)) as Range[]
+)
 
 const twoRepeats: Predicate = (s: string) => {
   return (

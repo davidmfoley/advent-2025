@@ -1,9 +1,7 @@
 import { test, expect } from 'vitest'
-import { fileReader } from '../utils/fileReader'
+import { fileReader, nonBlankLines } from '../utils/fileReader'
 
-const readInputFile = fileReader(__dirname)
-
-const loadLines = (file: string) => readInputFile(file).split('\n')
+const loadLines = fileReader(__dirname, nonBlankLines)
 
 const getRotation = (line: string) => {
   const direction = line[0]
