@@ -1,26 +1,28 @@
 import { expect, test } from 'vitest'
 import { fileReader } from '../utils/fileReader'
 
-type LocationMap = Map<string, Location>
 type Location = [number, number]
+class LocationMap extends Map<string, Location> {}
 
-const grid = (s: string) => s.split('\n').map((l) => l.split(''))
+const buildLocationMap = (input: string) => {
+  let map = new LocationMap()
 
-const readInputFile = fileReader(__dirname, grid)
+  const grid = input.split('\n').map((l) => l.split(''))
+
+  grid.forEach((line, y) => {
+    line.forEach((cell, x) => {
+      if (cell === '@') map.set(locationKey([x, y]), [x, y])
+    })
+  })
+
+  return map
+}
+
+const readInputFile = fileReader(__dirname, buildLocationMap)
 
 const locationKey = ([x, y]: Location) => `${x},${y}`
 
-const getOccupiedLocations = (grid: string[][]) => {
-  let result = new Map<string, Location>()
-  grid.forEach((line, y) => {
-    line.forEach((cell, x) => {
-      if (cell === '@') result.set(locationKey([x, y]), [x, y])
-    })
-  })
-  return result
-}
-
-const dirs = [
+const eightDirections = [
   [-1, -1],
   [-1, 0],
   [-1, 1],
@@ -31,35 +33,26 @@ const dirs = [
   [1, 1],
 ]
 
-const getNeighborCount = ([x, y]: Location, occupiedLocations: LocationMap) => {
-  const neighborLocations = dirs.map(([dx, dy]) => [x + dx, y + dy])
-
-  return neighborLocations
+const neighborCount = ([x, y]: Location, map: LocationMap) =>
+  eightDirections
+    .map(([dx, dy]) => [x + dx, y + dy])
     .map(locationKey)
-    .filter((k) => occupiedLocations.has(k)).length
-}
+    .filter((k) => map.has(k)).length
 
-const part1 = (cells: string[][]) => {
-  const occupiedLocations = getOccupiedLocations(cells)
-  const reachable = [...occupiedLocations.entries()].filter(
-    ([, coords]) => getNeighborCount(coords, occupiedLocations) < 4
-  )
+const reachableLocations = (map: LocationMap) =>
+  [...map.values()].filter((coords) => neighborCount(coords, map) < 4)
 
-  return reachable.length
-}
+const part1 = (map: LocationMap) => reachableLocations(map).length
 
-const part2 = (cells: string[][]) => {
-  const occupiedLocations = getOccupiedLocations(cells)
-  const startingCount = occupiedLocations.size
+const part2 = (map: LocationMap) => {
+  const startingCount = map.size
 
-  while (occupiedLocations.size) {
-    const reachable = [...occupiedLocations.entries()].filter(
-      ([, coords]) => getNeighborCount(coords, occupiedLocations) < 4
-    )
-    if (reachable.length === 0) return startingCount - occupiedLocations.size
+  while (map.size) {
+    const reachable = reachableLocations(map)
+    if (reachable.length === 0) return startingCount - map.size
 
-    for (let [k] of reachable) {
-      occupiedLocations.delete(k)
+    for (let location of reachable) {
+      map.delete(locationKey(location))
     }
   }
 
