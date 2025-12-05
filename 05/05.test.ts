@@ -127,7 +127,7 @@ test('part2 example input', () => {
   expect(part2(input)).toEqual(14)
 })
 
-test('amnswers', () => {
+test('answers', () => {
   const input = readInputFile('input.txt')
   console.log('05 pt 1', part1(input))
   console.log('05 pt 2', part2(input))
